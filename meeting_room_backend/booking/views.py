@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 from .models import *
 
@@ -110,7 +111,8 @@ def create_room(request):
 
 def room_list(request):
     try:
-        rooms = Room.objects.filter(is_available=True)
+        # rooms = Room.objects.filter(is_available=True)
+        rooms = Room.objects.all()
         room_data = []
         for room in rooms:
             room_data.append({
@@ -121,5 +123,121 @@ def room_list(request):
             })
 
         return JsonResponse(room_data,safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+@csrf_exempt
+def create_booking(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            room_id = data.get('room_id')
+            user_id = data.get('user_id')
+            date = data.get('date')
+            start_time = data.get('start_time')
+            end_time = data.get('end_time')
+
+            if not room_id or not user_id or not date or not start_time or not end_time:
+                return JsonResponse({'error': 'All fields are required'}, status=400)
+            try:
+                room = Room.objects.get(id=room_id)
+            except Room.DoesNotExist:
+                return JsonResponse({'error': 'Room does not exist'}, status=404)
+
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return JsonResponse({'error': 'User does not exist'}, status=404)
+
+            
+            booking_date = datetime.strptime(date,'%Y-%m-%d').date()
+            today = datetime.today().date()
+
+            if booking_date < today:
+                return JsonResponse({'error': 'Past dates are not allowed'}, status=400)
+
+            start = datetime.strptime(start_time,'%H:%M').time()
+            end = datetime.strptime(end_time,'%H:%M').time()
+            if end <= start:
+                return JsonResponse({'error': 'End time must be greater than start time'}, status=400)
+
+            overlapping_bookings = Booking.objects.filter(room=room,date=booking_date,start_time__lt=end,end_time__gt=start)
+            if overlapping_bookings.exists():
+                return JsonResponse({'error': 'Room already booked for this time slot'}, status=400)
+
+            booking = Booking.objects.create(room=room,user=user,date=booking_date,start_time=start,end_time=end)
+
+            return JsonResponse({'message': 'Booking created successfully','booking_id': booking.id})
+
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+def my_bookings(request, user_id):
+    try:
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User does not exist'}, status=404)
+
+        bookings = Booking.objects.filter(user=user).order_by('-created_at')
+        booking_data = []
+        for booking in bookings:
+            booking_data.append({'booking_id': booking.id,'room_name': booking.room.name,
+                                 'date': booking.date,'start_time': booking.start_time,
+                                 'end_time': booking.end_time,'status': booking.status
+                                 
+                                 })
+
+        return JsonResponse(booking_data,safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+def all_bookings(request):
+    try:
+        bookings = Booking.objects.all().order_by('-created_at')
+        booking_data = []
+        for booking in bookings:
+            booking_data.append({
+                'booking_id': booking.id,
+                'username': booking.user.username,
+                'room_name': booking.room.name,
+                'date': booking.date,
+                'start_time': booking.start_time,
+                'end_time': booking.end_time,
+                'status': booking.status
+            })
+        return JsonResponse(booking_data,safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+@csrf_exempt
+def update_booking_status(request, booking_id):
+    try:
+        if request.method == 'PATCH':
+            data = json.loads(request.body)
+            status = data.get('status')
+            if not status:
+                return JsonResponse({'error': 'Status is required'}, status=400)
+            
+            if status not in ['Approved', 'Rejected']:
+                return JsonResponse({'error': 'Invalid status'}, status=400)
+
+            try:
+                booking = Booking.objects.get(id=booking_id)
+            except Booking.DoesNotExist:
+                return JsonResponse({'error': 'Booking does not exist'}, status=404)
+
+            booking.status = status
+            booking.save()
+            return JsonResponse({'message': 'Booking status updated successfully'})
+
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
