@@ -1,1 +1,31 @@
-<p>room-list works!</p>
+<div class="container mt-5">
+  <h2 class="mb-4">Available Meeting Rooms</h2>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let room of rooms">
+      <div class="card p-3 h-100">
+        <h4>
+          {{ room.name }}
+        </h4>
+
+        <p>
+          Capacity:
+          {{ room.capacity }}
+        </p>
+
+        <p>
+          Location:
+          {{ room.location }}
+        </p>
+
+        <button
+    class="btn btn-primary"
+    [routerLink]="['/create-booking']"
+    [queryParams]="{ room_id: room.id }"
+>
+    Book Room
+</button>
+      </div>
+    </div>
+  </div>
+</div>

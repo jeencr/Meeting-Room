@@ -18,9 +18,9 @@ const routes: Routes = [
     {path: 'rooms', component: RoomListComponent,canActivate: [AuthGuard]},
     {path: 'create-booking', component: CreateBookingComponent,canActivate: [AuthGuard]},
     {path: 'my-bookings', component: MyBookingsComponent,canActivate: [AuthGuard]},
-    {path: 'dashboard', component: DashboardComponent,canActivate: [AdminGuard]},
-    {path: 'manage-rooms', component: ManageRoomsComponent,canActivate: [AdminGuard]},
-    {path: 'manage-bookings', component: ManageBookingsComponent,canActivate: [AdminGuard]},
+    {path: 'admin/dashboard', component: DashboardComponent,canActivate: [AdminGuard]},
+    {path: 'admin/manage-rooms', component: ManageRoomsComponent,canActivate: [AdminGuard]},
+    {path: 'admin/manage-bookings', component: ManageBookingsComponent,canActivate: [AdminGuard]},
 ];
 
 @NgModule({

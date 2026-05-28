@@ -1,1 +1,48 @@
-<p>my-bookings works!</p>
+<div class="container mt-5">
+  <h2 class="mb-4">My Bookings</h2>
+
+  <div *ngIf="bookings.length == 0" class="alert alert-info">
+    No bookings found
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let booking of bookings">
+      <div class="card p-3 h-100">
+        <h4>
+          {{ booking.room_name }}
+        </h4>
+
+        <p>
+          Date:
+          {{ booking.date }}
+        </p>
+
+        <p>
+          Start:
+          {{ booking.start_time }}
+        </p>
+
+        <p>
+          End:
+          {{ booking.end_time }}
+        </p>
+
+        <p>
+          Status:
+
+          <span class="badge bg-warning" *ngIf="booking.status == 'Pending'">
+            Pending
+          </span>
+
+          <span class="badge bg-success" *ngIf="booking.status == 'Approved'">
+            Approved
+          </span>
+
+          <span class="badge bg-danger" *ngIf="booking.status == 'Rejected'">
+            Rejected
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
