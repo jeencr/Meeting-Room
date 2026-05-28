@@ -21,4 +21,16 @@ export class BookingService {
   getMyBookings(user_id: any) {
     return this.http.get(`${this.apiUrl}/my-bookings/${user_id}/`);
   }
+
+  getAllBookings() {
+    return this.http.get(`${this.apiUrl}/all-bookings/`);
+  }
+
+  updateBookingStatus(booking_id: any, data: any) {
+    return this.http.patch(
+      `${this.apiUrl}/update-booking-status/${booking_id}/`,
+
+      data,
+    );
+  }
 }

@@ -1,1 +1,114 @@
-<p>manage-bookings works!</p>
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Manage Bookings
+    </h2>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Room</th>
+
+                    <th>Date</th>
+
+                    <th>Start Time</th>
+
+                    <th>End Time</th>
+
+                    <th>Status</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let booking of bookings">
+
+                    <td>
+                        {{ booking.username }}
+                    </td>
+
+                    <td>
+                        {{ booking.room_name }}
+                    </td>
+
+                    <td>
+                        {{ booking.date }}
+                    </td>
+
+                    <td>
+                        {{ booking.start_time }}
+                    </td>
+
+                    <td>
+                        {{ booking.end_time }}
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="badge bg-warning"
+                            *ngIf="booking.status == 'Pending'"
+                        >
+                            Pending
+                        </span>
+
+                        <span
+                            class="badge bg-success"
+                            *ngIf="booking.status == 'Approved'"
+                        >
+                            Approved
+                        </span>
+
+                        <span
+                            class="badge bg-danger"
+                            *ngIf="booking.status == 'Rejected'"
+                        >
+                            Rejected
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-success btn-sm me-2"
+                            (click)="updateStatus(
+                                booking.booking_id,
+                                'Approved'
+                            )"
+                        >
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-danger btn-sm"
+                            (click)="updateStatus(
+                                booking.booking_id,
+                                'Rejected'
+                            )"
+                        >
+                            Reject
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

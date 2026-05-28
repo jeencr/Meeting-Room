@@ -1,1 +1,63 @@
-<p>manage-rooms works!</p>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h3 class="mb-4">Create Room</h3>
+
+        <div class="mb-3">
+          <label> Room Name </label>
+
+          <input type="text" class="form-control" [(ngModel)]="name" />
+        </div>
+
+        <div class="mb-3">
+          <label> Capacity </label>
+
+          <input type="number" class="form-control" [(ngModel)]="capacity" />
+        </div>
+
+        <div class="mb-3">
+          <label> Location </label>
+
+          <input type="text" class="form-control" [(ngModel)]="location" />
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success">
+          {{ successMessage }}
+        </div>
+
+        <button class="btn btn-primary w-100" (click)="createRoom()">
+          Create Room
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <h3 class="mb-4">Rooms</h3>
+
+      <div class="row">
+        <div class="col-md-6 mb-4" *ngFor="let room of rooms">
+          <div class="card p-3 h-100">
+            <h4>
+              {{ room.name }}
+            </h4>
+
+            <p>
+              Capacity:
+              {{ room.capacity }}
+            </p>
+
+            <p>
+              Location:
+              {{ room.location }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
