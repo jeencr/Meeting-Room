@@ -25,10 +25,11 @@ export class ManageRoomsComponent implements OnInit {
 
   getRooms() {
     this.isLoading = true;
-    
+
     this.roomService.getRooms().subscribe(
       (response: any) => {
         this.rooms = response;
+        console.log(this.rooms);
         this.isLoading = false;
       },
       (error) => {
@@ -94,5 +95,12 @@ export class ManageRoomsComponent implements OnInit {
         this.isCreating = false;
       },
     );
+  }
+  updateAvailability(room_id: number, is_available: boolean) {
+    this.roomService
+      .updateRoomAvailability(room_id, is_available)
+      .subscribe((response: any) => {
+        Swal.fire('Success', response.message, 'success');
+      });
   }
 }

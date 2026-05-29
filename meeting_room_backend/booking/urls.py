@@ -12,4 +12,5 @@ urlpatterns = [
     path('update-booking-status/<int:booking_id>/', views.update_booking_status),
     path('dashboard-stats/', views.dashboard_stats),
     path('booked-slots/', views.booked_slots),
+    path('update-room-availability/<int:room_id>/', views.update_room_availability),
 ]

@@ -132,6 +132,12 @@
     height: 8px;
     border-radius: 50%;
     background: #48bb78;
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   .room-name {
@@ -146,7 +152,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .detail-row {
@@ -174,33 +180,6 @@
   .detail-value {
     color: #2d3748;
     font-weight: 500;
-  }
-
-  .room-features {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 22px;
-    flex-wrap: wrap;
-  }
-
-  .feature-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 12px;
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 12px;
-    color: #4a5568;
-    font-weight: 500;
-  }
-
-  .feature-chip mat-icon {
-    font-size: 15px;
-    width: 15px;
-    height: 15px;
-    color: #667eea;
   }
 
   .btn-book {
@@ -332,15 +311,6 @@
     .room-name {
       font-size: 17px;
     }
-
-    .room-features {
-      gap: 6px;
-    }
-
-    .feature-chip {
-      font-size: 11px;
-      padding: 5px 10px;
-    }
   }
 </style>
 
@@ -351,9 +321,9 @@
         <mat-icon>meeting_room</mat-icon>
         Available Meeting Rooms
       </h1>
-      <div class="rooms-count" *ngIf="!isLoading && rooms.length > 0">
+      <div class="rooms-count" *ngIf="!isLoading && availableRooms.length > 0">
         <mat-icon>door_open</mat-icon>
-        {{ rooms.length }} rooms available
+        {{ availableRooms.length }} rooms available
       </div>
     </div>
 
@@ -364,7 +334,7 @@
     </div>
 
     <!-- Empty -->
-    <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
+    <div *ngIf="!isLoading && availableRooms.length === 0" class="empty-state">
       <div class="empty-icon-wrapper">
         <mat-icon>meeting_room</mat-icon>
       </div>
@@ -373,11 +343,11 @@
     </div>
 
     <!-- Room Cards -->
-    <div class="rooms-grid" *ngIf="!isLoading && rooms.length > 0">
-      <mat-card class="room-card" *ngFor="let room of rooms">
+    <div class="rooms-grid" *ngIf="!isLoading && availableRooms.length > 0">
+      <mat-card class="room-card" *ngFor="let room of availableRooms">
         <mat-card-content class="room-card-content">
           <div class="room-icon-wrapper">
-            <mat-icon>door_open</mat-icon>
+            <mat-icon>door_front</mat-icon>
           </div>
 
           <div class="availability-badge">
@@ -400,28 +370,13 @@
             </div>
           </div>
 
-          <div class="room-features">
-            <span class="feature-chip">
-              <mat-icon>wifi</mat-icon>
-              WiFi
-            </span>
-            <span class="feature-chip">
-              <mat-icon>tv</mat-icon>
-              Projector
-            </span>
-            <span class="feature-chip">
-              <mat-icon>coffee</mat-icon>
-              Coffee
-            </span>
-          </div>
-
           <a 
             mat-raised-button 
             class="btn-book" 
             [routerLink]="['/create-booking']" 
             [queryParams]="{ room_id: room.id }"
           >
-            <mat-icon>calendar_add_on</mat-icon>
+            <mat-icon>event</mat-icon>
             Book This Room
           </a>
         </mat-card-content>

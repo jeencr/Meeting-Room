@@ -15,9 +15,16 @@ export class RoomService {
   }
 
   createRoom(data: any) {
-    return this.http.post(
-      `${this.apiUrl}/create-room/`,
-      data,
+    return this.http.post(`${this.apiUrl}/create-room/`, data);
+  }
+
+  updateRoomAvailability(room_id: number, is_available: boolean) {
+    return this.http.patch(
+      `${this.apiUrl}/update-room-availability/${room_id}/`,
+
+      {
+        is_available: is_available,
+      },
     );
   }
 }

@@ -8,6 +8,7 @@ import { RoomService } from 'src/app/services/room.service';
 })
 export class RoomListComponent implements OnInit {
   rooms: any[] = [];
+  availableRooms: any[] = [];
   isLoading = false;
 
   constructor(private roomService: RoomService) {}
@@ -22,6 +23,8 @@ export class RoomListComponent implements OnInit {
     this.roomService.getRooms().subscribe(
       (response: any) => {
         this.rooms = response;
+        // Filter only available rooms (is_available = true)
+        this.availableRooms = this.rooms.filter(room => room.is_available !== false);
         this.isLoading = false;
       },
       (error) => {

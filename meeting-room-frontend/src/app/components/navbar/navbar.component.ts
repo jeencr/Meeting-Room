@@ -12,6 +12,12 @@ export class NavbarComponent implements OnInit {
   group: any = '';
   isLoggedIn = false;
 
+  isMobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -30,6 +36,7 @@ export class NavbarComponent implements OnInit {
   loadNavbar() {
     this.group = localStorage.getItem('group');
     this.isLoggedIn = !!localStorage.getItem('user_id');
+    this.isMobileMenuOpen = false;
   }
 
   logout() {
@@ -46,7 +53,7 @@ export class NavbarComponent implements OnInit {
       if (result.isConfirmed) {
         this.authService.logout();
         this.router.navigate(['/login']);
-        
+
         Swal.fire({
           icon: 'success',
           title: 'Logged Out',

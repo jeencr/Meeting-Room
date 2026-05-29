@@ -135,7 +135,6 @@
     border-color: #a0aec0;
   }
 
-  /* Remove number input spinners */
   .custom-input[type="number"]::-webkit-inner-spin-button,
   .custom-input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -289,7 +288,7 @@
   }
 
   .room-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -358,6 +357,45 @@
 
   .detail-value {
     color: #2d3748;
+  }
+
+  /* Availability Toggle */
+  .availability-toggle {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  /* Override slide toggle colors */
+  .availability-toggle .mdc-switch:enabled .mdc-switch__track {
+    background: #cbd5e0 !important;
+  }
+
+  .availability-toggle .mdc-switch:enabled .mdc-switch__track::after {
+    background: #48bb78 !important;
+  }
+
+  .availability-toggle .mdc-switch:enabled .mdc-switch__handle::after {
+    background: white !important;
+  }
+
+  .availability-toggle .mdc-switch.mdc-switch--checked .mdc-switch__track {
+    background: rgba(72, 187, 120, 0.3) !important;
+  }
+
+  .availability-toggle .mdc-switch.mdc-switch--checked .mdc-switch__track::after {
+    background: #48bb78 !important;
+  }
+
+  .availability-toggle .mdc-switch.mdc-switch--checked .mdc-switch__handle::after {
+    background: #48bb78 !important;
+  }
+
+  .toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-left: 4px;
   }
 
   /* Loading State */
@@ -447,7 +485,6 @@
 
 <div class="manage-rooms-container">
   <div class="manage-wrapper">
-    <!-- Page Title -->
     <h1 class="page-title">
       <mat-icon>settings</mat-icon>
       Manage Rooms
@@ -461,69 +498,68 @@
           <h3>Create Room</h3>
         </div>
         <div class="card-body">
-          <!-- Room Name -->
           <div class="form-group">
             <label class="form-label">Room Name</label>
             <div class="input-wrapper">
               <mat-icon class="input-icon">meeting_room</mat-icon>
-              <input 
-                type="text" 
-                class="custom-input" 
-                [(ngModel)]="name" 
+              <input
+                type="text"
+                class="custom-input"
+                [(ngModel)]="name"
                 placeholder="Enter room name"
               />
             </div>
           </div>
 
-          <!-- Capacity -->
           <div class="form-group">
             <label class="form-label">Capacity</label>
             <div class="input-wrapper">
               <mat-icon class="input-icon">people</mat-icon>
-              <input 
-                type="number" 
-                class="custom-input" 
-                [(ngModel)]="capacity" 
+              <input
+                type="number"
+                class="custom-input"
+                [(ngModel)]="capacity"
                 placeholder="Enter capacity"
               />
             </div>
           </div>
 
-          <!-- Location -->
           <div class="form-group">
             <label class="form-label">Location</label>
             <div class="input-wrapper">
               <mat-icon class="input-icon">location_on</mat-icon>
-              <input 
-                type="text" 
-                class="custom-input" 
-                [(ngModel)]="location" 
+              <input
+                type="text"
+                class="custom-input"
+                [(ngModel)]="location"
                 placeholder="Enter location"
               />
             </div>
           </div>
 
-          <!-- Error Message -->
           <div *ngIf="errorMessage" class="alert-error">
             <mat-icon>error_outline</mat-icon>
             {{ errorMessage }}
           </div>
 
-          <!-- Success Message -->
           <div *ngIf="successMessage" class="alert-success">
             <mat-icon>check_circle</mat-icon>
             {{ successMessage }}
           </div>
 
-          <button 
-            mat-raised-button 
-            class="btn-create" 
+          <button
+            mat-raised-button
+            class="btn-create"
             (click)="createRoom()"
             [disabled]="isCreating || !name || !capacity || !location"
           >
-            <mat-spinner *ngIf="isCreating" diameter="20" style="margin-right: 8px;"></mat-spinner>
+            <mat-spinner
+              *ngIf="isCreating"
+              diameter="20"
+              style="margin-right: 8px"
+            ></mat-spinner>
             <mat-icon *ngIf="!isCreating">add</mat-icon>
-            {{ isCreating ? 'Creating...' : 'Create Room' }}
+            {{ isCreating ? "Creating..." : "Create Room" }}
           </button>
         </div>
       </mat-card>
@@ -541,20 +577,17 @@
           </div>
         </div>
 
-        <!-- Loading State -->
         <div *ngIf="isLoading" class="loading-state">
           <mat-spinner diameter="40" color="primary"></mat-spinner>
           <p>Loading rooms...</p>
         </div>
 
-        <!-- Empty State -->
         <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
           <mat-icon class="empty-icon">inbox</mat-icon>
           <h3>No Rooms Yet</h3>
           <p>Create your first meeting room using the form.</p>
         </div>
 
-        <!-- Room Cards -->
         <div class="room-grid" *ngIf="!isLoading && rooms.length > 0">
           <mat-card class="room-card" *ngFor="let room of rooms">
             <mat-card-content class="room-card-content">
@@ -573,6 +606,17 @@
                   <span class="detail-label">Location:</span>
                   <span class="detail-value">{{ room.location }}</span>
                 </div>
+              </div>
+
+              <!-- Availability Toggle -->
+              <div class="availability-toggle">
+                <mat-slide-toggle
+                  [checked]="room.is_available"
+                  (change)="updateAvailability(room.id, $event.checked)"
+                  color="primary"
+                >
+                  <span class="toggle-label">Available for booking</span>
+                </mat-slide-toggle>
               </div>
             </mat-card-content>
           </mat-card>

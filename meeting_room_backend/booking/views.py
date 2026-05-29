@@ -120,6 +120,7 @@ def room_list(request):
                 'name': room.name,
                 'capacity': room.capacity,
                 'location': room.location,
+                'is_available': room.is_available
             })
 
         return JsonResponse(room_data,safe=False)
@@ -275,5 +276,26 @@ def booked_slots(request):
 
         return JsonResponse(slot_data,safe=False)
 
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+
+@csrf_exempt
+def update_room_availability(request, room_id):
+    try:
+        if request.method == 'PATCH':
+            data = json.loads(request.body)
+            is_available = data.get('is_available')
+            room = Room.objects.get(id=room_id)
+            room.is_available = is_available
+            room.save()
+            return JsonResponse({'message': 'Room updated successfully'})
+
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+    except Room.DoesNotExist:
+        return JsonResponse({'error': 'Room not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
