@@ -78,6 +78,7 @@
   /* Form Group */
   .form-group {
     margin-bottom: 18px;
+    position: relative;
   }
 
   .form-label {
@@ -132,6 +133,16 @@
     border-color: #a0aec0;
   }
 
+  /* Error state for inputs */
+  .custom-input.ng-invalid.ng-touched {
+    border-color: #f56565;
+  }
+
+  .custom-input.ng-invalid.ng-touched:focus {
+    border-color: #f56565;
+    box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.15);
+  }
+
   /* Password Input with toggle */
   .input-wrapper .custom-input.password-input {
     padding-right: 50px;
@@ -160,6 +171,22 @@
     font-size: 20px;
     width: 20px;
     height: 20px;
+  }
+
+  /* Error Message */
+  .error-message {
+    color: #f56565;
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .error-message mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
   }
 
   /* Register Button */
@@ -272,7 +299,7 @@
       </div>
 
       <!-- Register Form -->
-      <form (ngSubmit)="register()">
+      <form #registerForm="ngForm" (ngSubmit)="register()">
         <!-- Name Row -->
         <div class="name-row">
           <!-- First Name -->
@@ -287,7 +314,17 @@
                 name="first_name" 
                 placeholder="First name" 
                 required
+                minlength="2"
+                maxlength="50"
+                pattern="^[a-zA-Z\s]*$"
+                #firstName="ngModel"
               />
+            </div>
+            <div *ngIf="firstName.touched && firstName.invalid" class="error-message">
+              <mat-icon>error</mat-icon>
+              <span *ngIf="firstName.errors?.required">First name is required</span>
+              <span *ngIf="firstName.errors?.minlength">Minimum 2 characters required</span>
+              <span *ngIf="firstName.errors?.pattern">Only letters and spaces allowed</span>
             </div>
           </div>
 
@@ -303,7 +340,17 @@
                 name="last_name" 
                 placeholder="Last name" 
                 required
+                minlength="2"
+                maxlength="50"
+                pattern="^[a-zA-Z\s]*$"
+                #lastName="ngModel"
               />
+            </div>
+            <div *ngIf="lastName.touched && lastName.invalid" class="error-message">
+              <mat-icon>error</mat-icon>
+              <span *ngIf="lastName.errors?.required">Last name is required</span>
+              <span *ngIf="lastName.errors?.minlength">Minimum 2 characters required</span>
+              <span *ngIf="lastName.errors?.pattern">Only letters and spaces allowed</span>
             </div>
           </div>
         </div>
@@ -320,7 +367,17 @@
               name="username" 
               placeholder="Choose a username" 
               required
+              minlength="3"
+              maxlength="30"
+              pattern="^[a-zA-Z0-9_]*$"
+              #userName="ngModel"
             />
+          </div>
+          <div *ngIf="userName.touched && userName.invalid" class="error-message">
+            <mat-icon>error</mat-icon>
+            <span *ngIf="userName.errors?.required">Username is required</span>
+            <span *ngIf="userName.errors?.minlength">Minimum 3 characters required</span>
+            <span *ngIf="userName.errors?.pattern">Only letters, numbers, and underscores allowed</span>
           </div>
         </div>
 
@@ -336,7 +393,15 @@
               name="email" 
               placeholder="Enter your email" 
               required
+              email
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              #emailField="ngModel"
             />
+          </div>
+          <div *ngIf="emailField.touched && emailField.invalid" class="error-message">
+            <mat-icon>error</mat-icon>
+            <span *ngIf="emailField.errors?.required">Email is required</span>
+            <span *ngIf="emailField.errors?.email || emailField.errors?.pattern">Please enter a valid email address</span>
           </div>
         </div>
 
@@ -352,10 +417,19 @@
               name="password" 
               placeholder="Create a password" 
               required
+              minlength="8"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+              #passwordField="ngModel"
             />
             <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
               <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
+          </div>
+          <div *ngIf="passwordField.touched && passwordField.invalid" class="error-message">
+            <mat-icon>error</mat-icon>
+            <span *ngIf="passwordField.errors?.required">Password is required</span>
+            <span *ngIf="passwordField.errors?.minlength">Minimum 8 characters required</span>
+            <span *ngIf="passwordField.errors?.pattern">Must contain uppercase, lowercase, number & special character</span>
           </div>
         </div>
 
@@ -364,11 +438,10 @@
           mat-raised-button 
           class="register-btn" 
           type="submit" 
-          [disabled]="isLoading || !first_name || !last_name || !username || !email || !password"
+          [disabled]="isLoading || registerForm.invalid"
         >
           <mat-spinner *ngIf="isLoading" diameter="22"></mat-spinner>
           <span *ngIf="!isLoading">Create Account</span>
-          <!-- <span *ngIf="isLoading">Creating account...</span> -->
         </button>
 
         <!-- Login Link -->
