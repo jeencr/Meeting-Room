@@ -265,7 +265,7 @@ def booked_slots(request):
         if not room_id or not date:
             return JsonResponse({'error': 'Room and date required'}, status=400)
 
-        bookings = Booking.objects.filter(room_id=room_id,date=date,status_in=['Pending','Approved'])
+        bookings = Booking.objects.filter(room_id=room_id,date=date,status__in=['Pending','Approved'])
         slot_data = []
         for booking in bookings:
             slot_data.append({
