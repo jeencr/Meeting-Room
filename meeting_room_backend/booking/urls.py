@@ -13,4 +13,5 @@ urlpatterns = [
     path('dashboard-stats/', views.dashboard_stats),
     path('booked-slots/', views.booked_slots),
     path('update-room-availability/<int:room_id>/', views.update_room_availability),
+    path('health/', views.health),
 ]

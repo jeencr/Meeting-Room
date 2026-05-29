@@ -299,3 +299,8 @@ def update_room_availability(request, room_id):
         return JsonResponse({'error': 'Room not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+def health(request):
+    return JsonResponse({'status': 'ok'})
