@@ -457,7 +457,7 @@
                       'avatar-purple': i % 4 === 0,
                       'avatar-blue': i % 4 === 1,
                       'avatar-green': i % 4 === 2,
-                      'avatar-orange': i % 4 === 3,
+                      'avatar-orange': i % 4 === 3
                     }"
                   >
                     {{ booking.username?.charAt(0)?.toUpperCase() }}
@@ -505,7 +505,7 @@
                   [ngClass]="{
                     'status-pending': booking.status === 'Pending',
                     'status-approved': booking.status === 'Approved',
-                    'status-rejected': booking.status === 'Rejected',
+                    'status-rejected': booking.status === 'Rejected'
                   }"
                 >
                   <mat-icon *ngIf="booking.status === 'Pending'"
@@ -520,30 +520,31 @@
                   {{ booking.status }}
                 </span>
               </td>
-              <!-- actions -->
+
+              <!-- Actions -->
               <td>
                 <div class="action-btns">
-                  <button
-                    *ngIf="booking.status === 'Pending'"
-                    mat-raised-button
-                    class="btn-approve"
-                    (click)="updateStatus(booking.booking_id, 'Approved')"
-                    [disabled]="isUpdating"
-                  >
-                    <mat-icon>check</mat-icon>
-                    Approve
-                  </button>
+                  <ng-container *ngIf="booking.status === 'Pending'">
+                    <button
+                      mat-raised-button
+                      class="btn-approve"
+                      (click)="updateStatus(booking.booking_id, 'Approved')"
+                      [disabled]="isUpdating"
+                    >
+                      <mat-icon>check</mat-icon>
+                      Approve
+                    </button>
 
-                  <button
-                    *ngIf="booking.status === 'Pending'"
-                    mat-stroked-button
-                    class="btn-reject"
-                    (click)="updateStatus(booking.booking_id, 'Rejected')"
-                    [disabled]="isUpdating"
-                  >
-                    <mat-icon>close</mat-icon>
-                    Reject
-                  </button>
+                    <button
+                      mat-stroked-button
+                      class="btn-reject"
+                      (click)="updateStatus(booking.booking_id, 'Rejected')"
+                      [disabled]="isUpdating"
+                    >
+                      <mat-icon>close</mat-icon>
+                      Reject
+                    </button>
+                  </ng-container>
                 </div>
               </td>
             </tr>
