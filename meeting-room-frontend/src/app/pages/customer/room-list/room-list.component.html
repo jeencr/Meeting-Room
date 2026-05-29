@@ -1,31 +1,431 @@
-<div class="container mt-5">
-  <h2 class="mb-4">Available Meeting Rooms</h2>
+<style>
+  .rooms-container {
+    min-height: calc(100vh - 64px);
+    background: #f7fafc;
+    padding: 30px 0;
+  }
 
-  <div class="row">
-    <div class="col-md-4 mb-4" *ngFor="let room of rooms">
-      <div class="card p-3 h-100">
-        <h4>
-          {{ room.name }}
-        </h4>
+  .rooms-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-        <p>
-          Capacity:
-          {{ room.capacity }}
-        </p>
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
 
-        <p>
-          Location:
-          {{ room.location }}
-        </p>
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
 
-        <button
-    class="btn btn-primary"
-    [routerLink]="['/create-booking']"
-    [queryParams]="{ room_id: room.id }"
->
-    Book Room
-</button>
+  .page-title mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+  }
+
+  .rooms-count {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .rooms-count mat-icon {
+    color: #667eea;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .room-card {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .room-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-3px);
+  }
+
+  .room-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .room-card-content {
+    padding: 28px !important;
+  }
+
+  .room-icon-wrapper {
+    width: 52px;
+    height: 52px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .room-icon-wrapper mat-icon {
+    color: #667eea;
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .availability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: #d1fae5;
+    color: #065f46;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    border: 1px solid #6ee7b7;
+    width: fit-content;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #48bb78;
+  }
+
+  .room-name {
+    font-size: 19px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 18px;
+    line-height: 1.3;
+  }
+
+  .room-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #718096;
+  }
+
+  .detail-row mat-icon {
+    color: #a0aec0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .detail-label {
+    font-weight: 500;
+    color: #4a5568;
+    min-width: 70px;
+  }
+
+  .detail-value {
+    color: #2d3748;
+    font-weight: 500;
+  }
+
+  .room-features {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .feature-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #4a5568;
+    font-weight: 500;
+  }
+
+  .feature-chip mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    color: #667eea;
+  }
+
+  .btn-book {
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    border: none !important;
+    cursor: pointer;
+    height: 46px !important;
+  }
+
+  .btn-book:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px);
+    color: white !important;
+  }
+
+  .btn-book mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .loading-state p {
+    color: #718096;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .empty-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .empty-icon-wrapper mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #667eea;
+  }
+
+  .empty-state h3 {
+    color: #2d3748;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    color: #a0aec0;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .rooms-container {
+      padding: 20px 0;
+    }
+
+    .rooms-wrapper {
+      padding: 0 16px;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+
+    .page-title mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .rooms-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .room-card-content {
+      padding: 24px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 20px;
+    }
+
+    .room-card-content {
+      padding: 20px !important;
+    }
+
+    .room-name {
+      font-size: 17px;
+    }
+
+    .room-features {
+      gap: 6px;
+    }
+
+    .feature-chip {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+  }
+</style>
+
+<div class="rooms-container">
+  <div class="rooms-wrapper">
+    <div class="page-header">
+      <h1 class="page-title">
+        <mat-icon>meeting_room</mat-icon>
+        Available Meeting Rooms
+      </h1>
+      <div class="rooms-count" *ngIf="!isLoading && rooms.length > 0">
+        <mat-icon>door_open</mat-icon>
+        {{ rooms.length }} rooms available
       </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-state">
+      <mat-spinner diameter="40" color="primary"></mat-spinner>
+      <p>Loading available rooms...</p>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
+      <div class="empty-icon-wrapper">
+        <mat-icon>meeting_room</mat-icon>
+      </div>
+      <h3>No Rooms Available</h3>
+      <p>There are currently no meeting rooms available. Please check back later.</p>
+    </div>
+
+    <!-- Room Cards -->
+    <div class="rooms-grid" *ngIf="!isLoading && rooms.length > 0">
+      <mat-card class="room-card" *ngFor="let room of rooms">
+        <mat-card-content class="room-card-content">
+          <div class="room-icon-wrapper">
+            <mat-icon>door_open</mat-icon>
+          </div>
+
+          <div class="availability-badge">
+            <span class="dot"></span>
+            Available for booking
+          </div>
+
+          <h4 class="room-name">{{ room.name }}</h4>
+
+          <div class="room-details">
+            <div class="detail-row">
+              <mat-icon>people</mat-icon>
+              <span class="detail-label">Capacity:</span>
+              <span class="detail-value">{{ room.capacity }} people</span>
+            </div>
+            <div class="detail-row">
+              <mat-icon>location_on</mat-icon>
+              <span class="detail-label">Location:</span>
+              <span class="detail-value">{{ room.location }}</span>
+            </div>
+          </div>
+
+          <div class="room-features">
+            <span class="feature-chip">
+              <mat-icon>wifi</mat-icon>
+              WiFi
+            </span>
+            <span class="feature-chip">
+              <mat-icon>tv</mat-icon>
+              Projector
+            </span>
+            <span class="feature-chip">
+              <mat-icon>coffee</mat-icon>
+              Coffee
+            </span>
+          </div>
+
+          <a 
+            mat-raised-button 
+            class="btn-book" 
+            [routerLink]="['/create-booking']" 
+            [queryParams]="{ room_id: room.id }"
+          >
+            <mat-icon>calendar_add_on</mat-icon>
+            Book This Room
+          </a>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>

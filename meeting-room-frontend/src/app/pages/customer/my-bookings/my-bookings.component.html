@@ -1,48 +1,458 @@
-<div class="container mt-5">
-  <h2 class="mb-4">My Bookings</h2>
+<style>
+  /* Container */
+  .my-bookings-container {
+    min-height: calc(100vh - 64px);
+    background: #f7fafc;
+    padding: 30px 0;
+  }
 
-  <div *ngIf="bookings.length == 0" class="alert alert-info">
-    No bookings found
-  </div>
+  .bookings-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-  <div class="row">
-    <div class="col-md-4 mb-4" *ngFor="let booking of bookings">
-      <div class="card p-3 h-100">
-        <h4>
-          {{ booking.room_name }}
-        </h4>
+  /* Page Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
 
-        <p>
-          Date:
-          {{ booking.date }}
-        </p>
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
 
-        <p>
-          Start:
-          {{ booking.start_time }}
-        </p>
+  .page-title mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+  }
 
-        <p>
-          End:
-          {{ booking.end_time }}
-        </p>
+  .booking-count {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+  }
 
-        <p>
-          Status:
+  .booking-count mat-icon {
+    color: #667eea;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
 
-          <span class="badge bg-warning" *ngIf="booking.status == 'Pending'">
-            Pending
-          </span>
+  /* Bookings Grid */
+  .bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
 
-          <span class="badge bg-success" *ngIf="booking.status == 'Approved'">
-            Approved
-          </span>
+  /* Booking Card */
+  .booking-card {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+  }
 
-          <span class="badge bg-danger" *ngIf="booking.status == 'Rejected'">
-            Rejected
-          </span>
-        </p>
+  .booking-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .booking-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Status accent borders */
+  .booking-card.status-pending::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+
+  .booking-card.status-approved::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+  }
+
+  .booking-card.status-rejected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #fc8181, #f56565);
+  }
+
+  .booking-card-content {
+    padding: 24px !important;
+  }
+
+  /* Booking Header */
+  .booking-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+
+  .room-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .room-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .room-icon-wrapper mat-icon {
+    color: #667eea;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .room-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Status Badge */
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid transparent;
+  }
+
+  .status-badge mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .badge-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fbd38d;
+  }
+
+  .badge-approved {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #6ee7b7;
+  }
+
+  .badge-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+  }
+
+  /* Booking Details */
+  .booking-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .detail-row mat-icon {
+    color: #a0aec0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .detail-label {
+    font-weight: 500;
+    color: #4a5568;
+    min-width: 45px;
+  }
+
+  .detail-value {
+    color: #2d3748;
+    font-weight: 500;
+  }
+
+  .time-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .time-separator {
+    color: #cbd5e0;
+    font-weight: 300;
+  }
+
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .loading-state p {
+    color: #718096;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .empty-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .empty-icon-wrapper mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #667eea;
+  }
+
+  .empty-state h3 {
+    color: #2d3748;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    color: #a0aec0;
+    font-size: 15px;
+    margin-bottom: 24px;
+  }
+
+  .browse-btn {
+    padding: 10px 24px !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .browse-btn:hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .my-bookings-container {
+      padding: 20px 0;
+    }
+
+    .bookings-wrapper {
+      padding: 0 16px;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+
+    .page-title mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .bookings-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 20px;
+    }
+
+    .booking-card-content {
+      padding: 20px !important;
+    }
+
+    .booking-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="my-bookings-container">
+  <div class="bookings-wrapper">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">
+        <mat-icon>calendar_today</mat-icon>
+        My Bookings
+      </h1>
+      <div class="booking-count" *ngIf="!isLoading && bookings.length > 0">
+        <mat-icon>list_alt</mat-icon>
+        {{ bookings.length }} bookings
       </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <mat-spinner diameter="40" color="primary"></mat-spinner>
+      <p>Loading your bookings...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && bookings.length === 0" class="empty-state">
+      <div class="empty-icon-wrapper">
+        <mat-icon>event_busy</mat-icon>
+      </div>
+      <h3>No Bookings Found</h3>
+      <p>You haven't made any bookings yet. Start by browsing available rooms.</p>
+      <a mat-raised-button class="browse-btn" routerLink="/rooms">
+        <mat-icon>meeting_room</mat-icon>
+        Browse Rooms
+      </a>
+    </div>
+
+    <!-- Bookings Grid -->
+    <div class="bookings-grid" *ngIf="!isLoading && bookings.length > 0">
+      <mat-card 
+        class="booking-card"
+        [class.status-pending]="booking.status === 'Pending'"
+        [class.status-approved]="booking.status === 'Approved'"
+        [class.status-rejected]="booking.status === 'Rejected'"
+        *ngFor="let booking of bookings"
+      >
+        <mat-card-content class="booking-card-content">
+          <!-- Header -->
+          <div class="booking-header">
+            <div class="room-info">
+              <div class="room-icon-wrapper">
+                <mat-icon>meeting_room</mat-icon>
+              </div>
+              <h4 class="room-name">{{ booking.room_name }}</h4>
+            </div>
+            <span class="status-badge" [ngClass]="{
+              'badge-pending': booking.status === 'Pending',
+              'badge-approved': booking.status === 'Approved',
+              'badge-rejected': booking.status === 'Rejected'
+            }">
+              <mat-icon *ngIf="booking.status === 'Pending'">hourglass_empty</mat-icon>
+              <mat-icon *ngIf="booking.status === 'Approved'">check_circle</mat-icon>
+              <mat-icon *ngIf="booking.status === 'Rejected'">cancel</mat-icon>
+              {{ booking.status }}
+            </span>
+          </div>
+
+          <!-- Details -->
+          <div class="booking-details">
+            <div class="detail-row">
+              <mat-icon>calendar_today</mat-icon>
+              <span class="detail-label">Date:</span>
+              <span class="detail-value">{{ booking.date }}</span>
+            </div>
+
+            <div class="detail-row">
+              <mat-icon>schedule</mat-icon>
+              <span class="detail-label">Time:</span>
+              <div class="time-range">
+                <span class="detail-value">{{ booking.start_time }}</span>
+                <span class="time-separator">-</span>
+                <span class="detail-value">{{ booking.end_time }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>

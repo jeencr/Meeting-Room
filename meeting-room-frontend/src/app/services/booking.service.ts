@@ -33,4 +33,14 @@ export class BookingService {
       data,
     );
   }
+
+  getDashboardStats() {
+    return this.http.get(`${this.apiUrl}/dashboard-stats/`);
+  }
+
+  getBookedSlots(room_id: any, date: any) {
+    return this.http.get(
+      `${this.apiUrl}/booked-slots/?room_id=${room_id}&date=${date}`,
+    );
+  }
 }

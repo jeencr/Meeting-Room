@@ -1,51 +1,382 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card p-4">
-        <h3 class="text-center mb-4">Register</h3>
+<style>
+  /* Register Container */
+  .register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+  }
 
-        <div class="mb-3">
-          <label> First Name </label>
+  /* Register Card */
+  .register-card {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    background: white !important;
+    background-color: white !important;
+  }
 
-          <input type="text" class="form-control" [(ngModel)]="first_name" />
+  .register-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .register-card .mat-mdc-card-content {
+    padding: 40px !important;
+  }
+
+  /* Header */
+  .register-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .logo-icon {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .logo-icon mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: white;
+  }
+
+  .register-header h2 {
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: #718096;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* Name Row */
+  .name-row {
+    display: flex;
+    gap: 16px;
+  }
+
+  .name-row .form-group {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Form Group */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+
+  /* Input Wrapper */
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #a0aec0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 12px 14px 12px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #2d3748;
+    background: white;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .custom-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  .custom-input::placeholder {
+    color: #cbd5e0;
+  }
+
+  .custom-input:hover {
+    border-color: #a0aec0;
+  }
+
+  /* Password Input with toggle */
+  .input-wrapper .custom-input.password-input {
+    padding-right: 50px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0aec0;
+    transition: color 0.2s ease;
+    z-index: 1;
+  }
+
+  .password-toggle:hover {
+    color: #667eea;
+  }
+
+  .password-toggle mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Register Button */
+  .register-btn {
+    width: 100%;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    height: 50px !important;
+    margin-top: 10px !important;
+    border: none !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .register-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px);
+  }
+
+  .register-btn:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Login Link */
+  .login-link {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #718096;
+  }
+
+  .login-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .login-link a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  /* Spinner in button */
+  .register-btn mat-spinner {
+    margin-right: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
+    .register-card .mat-mdc-card-content {
+      padding: 30px 20px !important;
+    }
+
+    .register-header h2 {
+      font-size: 20px;
+    }
+
+    .logo-icon {
+      width: 55px;
+      height: 55px;
+    }
+
+    .logo-icon mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .name-row {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .custom-input {
+      padding: 10px 12px 10px 40px;
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .register-card .mat-mdc-card-content {
+      padding: 25px 16px !important;
+    }
+  }
+</style>
+
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-content>
+      <!-- Header -->
+      <div class="register-header">
+        <div class="logo-icon">
+          <mat-icon>person_add</mat-icon>
         </div>
-
-        <div class="mb-3">
-          <label> Last Name </label>
-
-          <input type="text" class="form-control" [(ngModel)]="last_name" />
-        </div>
-
-        <div class="mb-3">
-          <label> Username </label>
-
-          <input type="text" class="form-control" [(ngModel)]="username" />
-        </div>
-
-        <div class="mb-3">
-          <label> Email </label>
-
-          <input type="email" class="form-control" [(ngModel)]="email" />
-        </div>
-
-        <div class="mb-3">
-          <label> Password </label>
-
-          <input type="password" class="form-control" [(ngModel)]="password" />
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
-        </div>
-
-        <div *ngIf="successMessage" class="alert alert-success">
-          {{ successMessage }}
-        </div>
-
-        <button class="btn btn-success w-100" (click)="register()">
-          Register
-        </button>
+        <h2>Create Account</h2>
+        <p class="subtitle">Join Meeting Room Booking System</p>
       </div>
-    </div>
-  </div>
+
+      <!-- Register Form -->
+      <form (ngSubmit)="register()">
+        <!-- Name Row -->
+        <div class="name-row">
+          <!-- First Name -->
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">person</mat-icon>
+              <input 
+                type="text" 
+                class="custom-input" 
+                [(ngModel)]="first_name" 
+                name="first_name" 
+                placeholder="First name" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Last Name -->
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">person</mat-icon>
+              <input 
+                type="text" 
+                class="custom-input" 
+                [(ngModel)]="last_name" 
+                name="last_name" 
+                placeholder="Last name" 
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">account_circle</mat-icon>
+            <input 
+              type="text" 
+              class="custom-input" 
+              [(ngModel)]="username" 
+              name="username" 
+              placeholder="Choose a username" 
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">email</mat-icon>
+            <input 
+              type="email" 
+              class="custom-input" 
+              [(ngModel)]="email" 
+              name="email" 
+              placeholder="Enter your email" 
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">lock</mat-icon>
+            <input 
+              [type]="hidePassword ? 'password' : 'text'" 
+              class="custom-input password-input" 
+              [(ngModel)]="password" 
+              name="password" 
+              placeholder="Create a password" 
+              required
+            />
+            <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Register Button -->
+        <button 
+          mat-raised-button 
+          class="register-btn" 
+          type="submit" 
+          [disabled]="isLoading || !first_name || !last_name || !username || !email || !password"
+        >
+          <mat-spinner *ngIf="isLoading" diameter="22"></mat-spinner>
+          <span *ngIf="!isLoading">Create Account</span>
+          <span *ngIf="isLoading">Creating account...</span>
+        </button>
+
+        <!-- Login Link -->
+        <div class="login-link">
+          <span>Already have an account? </span>
+          <a routerLink="/login">Sign In</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

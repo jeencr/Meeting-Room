@@ -1,1 +1,609 @@
-<p>dashboard works!</p>
+<style>
+  /* Dashboard Container */
+  .dashboard-container {
+    min-height: calc(100vh - 64px);
+    background: #f7fafc;
+    padding: 30px 0;
+  }
+
+  .dashboard-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Page Title */
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .page-title mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #667eea;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .welcome-section {
+    margin-bottom: 32px;
+  }
+
+  .welcome-text {
+    font-size: 16px;
+    color: #718096;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .welcome-text mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #48bb78;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  /* Stat Card - FORCE WHITE BACKGROUND */
+  .stat-card {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border-radius: 16px !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border: none !important;
+  }
+
+  /* Override Material Card Styles */
+  .stat-card.mat-mdc-card,
+  .stat-card.mat-card {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    --mdc-elevated-card-container-color: #ffffff !important;
+    --mat-card-container-color: #ffffff !important;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12) !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+  }
+
+  /* Room Card */
+  .stat-card.rooms::before {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .stat-card.rooms .stat-icon {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+  }
+
+  .stat-card.rooms:hover .stat-icon {
+    background: rgba(102, 126, 234, 0.2);
+  }
+
+  /* Bookings Card */
+  .stat-card.bookings::before {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  }
+
+  .stat-card.bookings .stat-icon {
+    background: rgba(72, 187, 120, 0.1);
+    color: #48bb78;
+  }
+
+  .stat-card.bookings:hover .stat-icon {
+    background: rgba(72, 187, 120, 0.2);
+  }
+
+  /* Pending Card */
+  .stat-card.pending::before {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+  }
+
+  .stat-card.pending .stat-icon {
+    background: rgba(237, 137, 54, 0.1);
+    color: #ed8936;
+  }
+
+  .stat-card.pending:hover .stat-icon {
+    background: rgba(237, 137, 54, 0.2);
+  }
+
+  /* Card Content */
+  .stat-card-content {
+    padding: 28px !important;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: #ffffff !important;
+  }
+
+  .stat-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .stat-icon-wrapper mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-info {
+    flex: 1;
+  }
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2d3748;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-trend {
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-trend.up {
+    color: #48bb78;
+  }
+
+  .stat-trend mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Quick Actions Section */
+  .quick-actions {
+    background: #ffffff !important;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title mat-icon {
+    color: #667eea;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .action-button {
+    padding: 24px 20px !important;
+    border-radius: 12px !important;
+    border: 2px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    color: #4a5568 !important;
+  }
+
+  .action-button:hover {
+    border-color: #667eea !important;
+    background: rgba(102, 126, 234, 0.05) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+  }
+
+  .action-button mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+  }
+
+  .action-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+  }
+
+  /* Loading Container */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+  }
+
+  .loading-container p {
+    color: #718096;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .loading-container mat-spinner {
+    animation: fadeInScale 0.5s ease;
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Error State */
+  .error-container {
+    text-align: center;
+    padding: 60px 20px;
+    background: #ffffff !important;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .error-container mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #fc8181;
+    margin-bottom: 16px;
+  }
+
+  .error-container h3 {
+    color: #2d3748;
+    margin-bottom: 8px;
+  }
+
+  .error-container p {
+    color: #718096;
+    margin-bottom: 20px;
+  }
+
+  /* Skeleton Loading Cards - WHITE */
+  .skeleton-card {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border: none !important;
+  }
+
+  .skeleton-card.mat-mdc-card {
+    background-color: #ffffff !important;
+  }
+
+  .skeleton-content {
+    padding: 28px !important;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: #ffffff !important;
+  }
+
+  .skeleton-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(90deg, #f7fafc 25%, #edf2f7 50%, #f7fafc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 16px;
+  }
+
+  .skeleton-info {
+    flex: 1;
+  }
+
+  .skeleton-line {
+    height: 16px;
+    background: linear-gradient(90deg, #f7fafc 25%, #edf2f7 50%, #f7fafc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .skeleton-line.large {
+    height: 40px;
+    width: 60%;
+  }
+
+  .skeleton-line.medium {
+    height: 16px;
+    width: 80%;
+  }
+
+  .skeleton-line.small {
+    height: 12px;
+    width: 40%;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Override any Material dark theme inheritance */
+  mat-card {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 20px 0;
+    }
+
+    .dashboard-wrapper {
+      padding: 0 16px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .page-title mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .stat-card-content {
+      padding: 20px !important;
+    }
+
+    .stat-icon-wrapper {
+      width: 56px;
+      height: 56px;
+    }
+
+    .stat-icon-wrapper mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+    }
+
+    .actions-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions {
+      padding: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 20px;
+    }
+
+    .stat-card-content {
+      padding: 16px !important;
+      gap: 16px;
+    }
+
+    .stat-icon-wrapper {
+      width: 48px;
+      height: 48px;
+    }
+
+    .stat-icon-wrapper mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+    }
+
+    .actions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="dashboard-container">
+  <div class="dashboard-wrapper">
+    <!-- Page Header -->
+    <h1 class="page-title">
+      <mat-icon>dashboard</mat-icon>
+      Admin Dashboard
+    </h1>
+
+    <div class="welcome-section" *ngIf="!isLoading && !hasError">
+      <p class="welcome-text">
+        <mat-icon>waving_hand</mat-icon>
+        Welcome back! Here's your meeting room overview.
+      </p>
+    </div>
+
+    <!-- Loading State with Skeleton -->
+    <div class="stats-grid" *ngIf="isLoading">
+      <mat-card class="skeleton-card" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-content">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-line large"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line small"></div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid" *ngIf="!isLoading && !hasError">
+      <!-- Total Rooms -->
+      <mat-card class="stat-card rooms">
+        <mat-card-content class="stat-card-content">
+          <div class="stat-icon-wrapper stat-icon">
+            <mat-icon>meeting_room</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Total Rooms</div>
+            <div class="stat-value">{{ total_rooms }}</div>
+            <div class="stat-trend up">
+              <mat-icon>arrow_upward</mat-icon>
+              Available for booking
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Total Bookings -->
+      <mat-card class="stat-card bookings">
+        <mat-card-content class="stat-card-content">
+          <div class="stat-icon-wrapper stat-icon">
+            <mat-icon>event_available</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-value">{{ total_bookings }}</div>
+            <div class="stat-trend up">
+              <mat-icon>arrow_upward</mat-icon>
+              All time bookings
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Pending Bookings -->
+      <mat-card class="stat-card pending">
+        <mat-card-content class="stat-card-content">
+          <div class="stat-icon-wrapper stat-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Pending Bookings</div>
+            <div class="stat-value">{{ pending_bookings }}</div>
+            <div class="stat-trend">
+              <mat-icon>hourglass_empty</mat-icon>
+              Awaiting approval
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Quick Actions (Only when data is loaded) -->
+    <div class="quick-actions" *ngIf="!isLoading && !hasError">
+      <h2 class="section-title">
+        <mat-icon>bolt</mat-icon>
+        Quick Actions
+      </h2>
+      <div class="actions-grid">
+        <a mat-ripple class="action-button" routerLink="/admin/manage-rooms">
+          <mat-icon>add</mat-icon>
+          <span class="action-label">Add New Room</span>
+        </a>
+        <a mat-ripple class="action-button" routerLink="/admin/manage-bookings">
+          <mat-icon>event_note</mat-icon>
+          <span class="action-label">View All Bookings</span>
+        </a>
+        <a mat-ripple class="action-button" routerLink="/rooms">
+          <mat-icon>visibility</mat-icon>
+          <span class="action-label">Browse Rooms</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-container" *ngIf="!isLoading && hasError">
+      <mat-icon>error_outline</mat-icon>
+      <h3>Failed to load dashboard</h3>
+      <p>There was an error loading the dashboard data. Please try again.</p>
+      <button mat-raised-button color="primary" (click)="getDashboardStats()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  </div>
+</div>

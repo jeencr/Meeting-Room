@@ -10,4 +10,6 @@ urlpatterns = [
     path('my-bookings/<int:user_id>/', views.my_bookings),
     path('all-bookings/', views.all_bookings),
     path('update-booking-status/<int:booking_id>/', views.update_booking_status),
+    path('dashboard-stats/', views.dashboard_stats),
+    path('booked-slots/', views.booked_slots),
 ]

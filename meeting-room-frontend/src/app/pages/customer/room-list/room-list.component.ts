@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { RoomService } from 'src/app/services/room.service';
 
 @Component({
@@ -9,6 +8,7 @@ import { RoomService } from 'src/app/services/room.service';
 })
 export class RoomListComponent implements OnInit {
   rooms: any[] = [];
+  isLoading = false;
 
   constructor(private roomService: RoomService) {}
 
@@ -17,13 +17,16 @@ export class RoomListComponent implements OnInit {
   }
 
   getRooms() {
+    this.isLoading = true;
+    
     this.roomService.getRooms().subscribe(
       (response: any) => {
         this.rooms = response;
+        this.isLoading = false;
       },
-
       (error) => {
         console.log(error);
+        this.isLoading = false;
       },
     );
   }

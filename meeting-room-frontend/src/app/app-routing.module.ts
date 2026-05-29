@@ -10,6 +10,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
     {path: '',redirectTo: 'login',pathMatch: 'full'},
@@ -21,6 +22,7 @@ const routes: Routes = [
     {path: 'admin/dashboard', component: DashboardComponent,canActivate: [AdminGuard]},
     {path: 'admin/manage-rooms', component: ManageRoomsComponent,canActivate: [AdminGuard]},
     {path: 'admin/manage-bookings', component: ManageBookingsComponent,canActivate: [AdminGuard]},
+    {path: '**', component: NotFoundComponent}
 ];
 
 @NgModule({

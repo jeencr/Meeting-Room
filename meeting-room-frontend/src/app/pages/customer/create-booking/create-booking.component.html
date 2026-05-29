@@ -1,39 +1,489 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card p-4">
-        <h3 class="mb-4">Book Meeting Room</h3>
+<style>
+  /* Container */
+  .booking-container {
+    min-height: calc(100vh - 64px);
+    background: #f7fafc;
+    padding: 30px 0;
+  }
 
-        <div class="mb-3">
-          <label> Date </label>
+  .booking-wrapper {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
 
-          <input type="date" class="form-control" [(ngModel)]="date" />
+  /* Page Title */
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .page-title mat-icon {
+    color: #667eea;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Booking Card */
+  .booking-card {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
+  .booking-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .booking-card .mat-mdc-card-content {
+    padding: 35px 30px !important;
+  }
+
+  /* Room Badge */
+  .room-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+  }
+
+  .room-badge mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Form Group */
+  .form-group {
+    margin-bottom: 22px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 8px;
+  }
+
+  /* Input Wrapper */
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #a0aec0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 12px 14px 12px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #2d3748;
+    background: white;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .custom-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  .custom-input::placeholder {
+    color: #cbd5e0;
+  }
+
+  .custom-input:hover {
+    border-color: #a0aec0;
+  }
+
+  /* Date and Time inputs */
+  input[type="date"].custom-input,
+  input[type="time"].custom-input {
+    color-scheme: light;
+    cursor: pointer;
+  }
+
+  input[type="date"].custom-input::-webkit-calendar-picker-indicator,
+  input[type="time"].custom-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  input[type="date"].custom-input::-webkit-calendar-picker-indicator:hover,
+  input[type="time"].custom-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  /* Booked Slots Card */
+  .booked-slots-card {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 22px;
+  }
+
+  .booked-slots-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .booked-slots-title mat-icon {
+    color: #f59e0b;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .booked-slot-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #fde68a;
+    font-size: 14px;
+    color: #78350f;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .booked-slot-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .booked-slot-item:first-child {
+    padding-top: 0;
+  }
+
+  .slot-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  .slot-time mat-icon {
+    color: #f59e0b;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .slot-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .status-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbd38d;
+  }
+
+  .status-approved {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+  }
+
+  .status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+  }
+
+  /* No slots message */
+  .no-slots {
+    text-align: center;
+    padding: 16px;
+    color: #a0aec0;
+    font-size: 14px;
+    background: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .no-slots mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #48bb78;
+  }
+
+  /* Alerts */
+  .alert-error {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    color: #c53030;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .alert-error mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .alert-success {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    color: #276749;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .alert-success mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Book Button */
+  .btn-book {
+    width: 100%;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    height: 50px !important;
+    margin-top: 5px !important;
+    border: none !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-book:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px);
+  }
+
+  .btn-book:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Loading spinner in booked slots */
+  .slots-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 10px;
+    color: #718096;
+    font-size: 14px;
+  }
+
+  /* Responsive */
+  @media (max-width: 576px) {
+    .booking-card .mat-mdc-card-content {
+      padding: 25px 20px !important;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+
+    .page-title mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .custom-input {
+      padding: 10px 12px 10px 40px;
+      font-size: 14px;
+    }
+
+    .booked-slot-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="booking-container">
+  <div class="booking-wrapper">
+    <!-- Page Title -->
+    <h1 class="page-title">
+      <mat-icon>calendar_add_on</mat-icon>
+      Book Meeting Room
+    </h1>
+
+    <!-- Booking Card -->
+    <mat-card class="booking-card">
+      <mat-card-content>
+        <!-- Room Badge -->
+        <div class="room-badge" *ngIf="room_id">
+          <mat-icon>meeting_room</mat-icon>
+          Room ID: {{ room_id }}
         </div>
 
-        <div class="mb-3">
-          <label> Start Time </label>
-
-          <input type="time" class="form-control" [(ngModel)]="start_time" />
+        <!-- Date -->
+        <div class="form-group">
+          <label class="form-label">Select Date</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">calendar_today</mat-icon>
+            <input
+              type="date"
+              class="custom-input"
+              [(ngModel)]="date"
+              (change)="getBookedSlots()"
+              [min]="todayDate"
+            />
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label> End Time </label>
-
-          <input type="time" class="form-control" [(ngModel)]="end_time" />
+        <!-- Booked Slots Loading -->
+        <div *ngIf="isLoading" class="slots-loading">
+          <mat-spinner diameter="20"></mat-spinner>
+          Loading booked slots...
         </div>
 
-        <div *ngIf="errorMessage" class="alert alert-danger">
+        <!-- Booked Slots -->
+        <div *ngIf="!isLoading && date && bookedSlots.length > 0" class="booked-slots-card">
+          <div class="booked-slots-title">
+            <mat-icon>info</mat-icon>
+            Booked Slots for {{ date }}
+          </div>
+          <div *ngFor="let slot of bookedSlots" class="booked-slot-item">
+            <div class="slot-time">
+              <mat-icon>schedule</mat-icon>
+              {{ slot.start_time }} - {{ slot.end_time }}
+            </div>
+            <span class="slot-status" [ngClass]="{
+              'status-pending': slot.status === 'Pending',
+              'status-approved': slot.status === 'Approved',
+              'status-rejected': slot.status === 'Rejected'
+            }">
+              {{ slot.status }}
+            </span>
+          </div>
+        </div>
+
+        <!-- No Booked Slots -->
+        <div *ngIf="!isLoading && date && bookedSlots.length === 0" class="no-slots">
+          <mat-icon>check_circle</mat-icon>
+          No bookings for this date - All slots available!
+        </div>
+
+        <!-- Start Time -->
+        <div class="form-group">
+          <label class="form-label">Start Time</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">schedule</mat-icon>
+            <input 
+              type="time" 
+              class="custom-input" 
+              [(ngModel)]="start_time" 
+            />
+          </div>
+        </div>
+
+        <!-- End Time -->
+        <div class="form-group">
+          <label class="form-label">End Time</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">schedule</mat-icon>
+            <input 
+              type="time" 
+              class="custom-input" 
+              [(ngModel)]="end_time" 
+            />
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert-error">
+          <mat-icon>error_outline</mat-icon>
           {{ errorMessage }}
         </div>
 
-        <div *ngIf="successMessage" class="alert alert-success">
+        <!-- Success Message -->
+        <div *ngIf="successMessage" class="alert-success">
+          <mat-icon>check_circle</mat-icon>
           {{ successMessage }}
         </div>
 
-        <button class="btn btn-primary w-100" (click)="createBooking()">
-          Create Booking
+        <!-- Book Button -->
+        <button 
+          mat-raised-button 
+          class="btn-book" 
+          (click)="createBooking()"
+          [disabled]="isCreating || !date || !start_time || !end_time"
+        >
+          <mat-spinner *ngIf="isCreating" diameter="22"></mat-spinner>
+          <mat-icon *ngIf="!isCreating">check</mat-icon>
+          <span *ngIf="!isCreating">Create Booking</span>
+          <span *ngIf="isCreating">Creating booking...</span>
         </button>
-      </div>
-    </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

@@ -241,3 +241,39 @@ def update_booking_status(request, booking_id):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def dashboard_stats(request):
+    try:
+        total_rooms = Room.objects.count()
+        total_bookings = Booking.objects.count()
+        pending_bookings = Booking.objects.filter(status='Pending').count()
+
+        return JsonResponse({'total_rooms': total_rooms,'total_bookings': total_bookings,
+                             'pending_bookings': pending_bookings})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+def booked_slots(request):
+    try:
+        room_id = request.GET.get('room_id')
+        date = request.GET.get('date')
+
+        if not room_id or not date:
+            return JsonResponse({'error': 'Room and date required'}, status=400)
+
+        bookings = Booking.objects.filter(room_id=room_id,date=date)
+        slot_data = []
+        for booking in bookings:
+            slot_data.append({
+                'start_time': booking.start_time,
+                'end_time': booking.end_time,
+                'status': booking.status
+            })
+
+        return JsonResponse(slot_data,safe=False)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

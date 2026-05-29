@@ -1,61 +1,581 @@
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-4">
-      <div class="card p-4">
-        <h3 class="mb-4">Create Room</h3>
+<style>
+  /* Container */
+  .manage-rooms-container {
+    min-height: calc(100vh - 64px);
+    background: #f7fafc;
+    padding: 30px 0;
+  }
 
-        <div class="mb-3">
-          <label> Room Name </label>
+  .manage-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-          <input type="text" class="form-control" [(ngModel)]="name" />
+  /* Page Title */
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+  }
+
+  /* Layout */
+  .content-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* Form Card */
+  .form-card {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    position: sticky;
+    top: 84px;
+  }
+
+  .form-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header mat-icon {
+    color: #667eea;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+
+  /* Custom Form Group */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    color: #a0aec0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #2d3748;
+    background: white;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .custom-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .custom-input::placeholder {
+    color: #cbd5e0;
+  }
+
+  .custom-input:hover {
+    border-color: #a0aec0;
+  }
+
+  /* Remove number input spinners */
+  .custom-input[type="number"]::-webkit-inner-spin-button,
+  .custom-input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .custom-input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Alerts */
+  .alert-error {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    color: #c53030;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .alert-error mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .alert-success {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    color: #276749;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .alert-success mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Create Button */
+  .btn-create {
+    width: 100%;
+    padding: 12px !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    height: 48px !important;
+    border: none !important;
+  }
+
+  .btn-create:hover:not(:disabled) {
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-1px);
+  }
+
+  .btn-create:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
+  }
+
+  /* Rooms Section */
+  .rooms-section {
+    min-width: 0;
+  }
+
+  .rooms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .section-title mat-icon {
+    color: #667eea;
+  }
+
+  .rooms-count {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rooms-count mat-icon {
+    color: #667eea;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Room Cards Grid */
+  .room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* Room Card */
+  .room-card {
+    background: white !important;
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .room-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .room-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px);
+  }
+
+  .room-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .room-card-content {
+    padding: 20px !important;
+  }
+
+  .room-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .room-icon-wrapper mat-icon {
+    color: #667eea;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .room-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .room-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #718096;
+  }
+
+  .detail-row mat-icon {
+    color: #a0aec0;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .detail-label {
+    font-weight: 500;
+    color: #4a5568;
+    min-width: 70px;
+  }
+
+  .detail-value {
+    color: #2d3748;
+  }
+
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .loading-state p {
+    color: #718096;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #cbd5e0;
+    margin-bottom: 12px;
+  }
+
+  .empty-state h3 {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .empty-state p {
+    color: #a0aec0;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .content-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .form-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .manage-rooms-container {
+      padding: 20px 0;
+    }
+
+    .manage-wrapper {
+      padding: 0 16px;
+    }
+
+    .page-title {
+      font-size: 22px;
+    }
+
+    .page-title mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .room-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="manage-rooms-container">
+  <div class="manage-wrapper">
+    <!-- Page Title -->
+    <h1 class="page-title">
+      <mat-icon>settings</mat-icon>
+      Manage Rooms
+    </h1>
+
+    <div class="content-layout">
+      <!-- Create Room Form -->
+      <mat-card class="form-card">
+        <div class="card-header">
+          <mat-icon>add_circle</mat-icon>
+          <h3>Create Room</h3>
         </div>
-
-        <div class="mb-3">
-          <label> Capacity </label>
-
-          <input type="number" class="form-control" [(ngModel)]="capacity" />
-        </div>
-
-        <div class="mb-3">
-          <label> Location </label>
-
-          <input type="text" class="form-control" [(ngModel)]="location" />
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
-        </div>
-
-        <div *ngIf="successMessage" class="alert alert-success">
-          {{ successMessage }}
-        </div>
-
-        <button class="btn btn-primary w-100" (click)="createRoom()">
-          Create Room
-        </button>
-      </div>
-    </div>
-
-    <div class="col-md-8">
-      <h3 class="mb-4">Rooms</h3>
-
-      <div class="row">
-        <div class="col-md-6 mb-4" *ngFor="let room of rooms">
-          <div class="card p-3 h-100">
-            <h4>
-              {{ room.name }}
-            </h4>
-
-            <p>
-              Capacity:
-              {{ room.capacity }}
-            </p>
-
-            <p>
-              Location:
-              {{ room.location }}
-            </p>
+        <div class="card-body">
+          <!-- Room Name -->
+          <div class="form-group">
+            <label class="form-label">Room Name</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">meeting_room</mat-icon>
+              <input 
+                type="text" 
+                class="custom-input" 
+                [(ngModel)]="name" 
+                placeholder="Enter room name"
+              />
+            </div>
           </div>
+
+          <!-- Capacity -->
+          <div class="form-group">
+            <label class="form-label">Capacity</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">people</mat-icon>
+              <input 
+                type="number" 
+                class="custom-input" 
+                [(ngModel)]="capacity" 
+                placeholder="Enter capacity"
+              />
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">location_on</mat-icon>
+              <input 
+                type="text" 
+                class="custom-input" 
+                [(ngModel)]="location" 
+                placeholder="Enter location"
+              />
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert-error">
+            <mat-icon>error_outline</mat-icon>
+            {{ errorMessage }}
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage" class="alert-success">
+            <mat-icon>check_circle</mat-icon>
+            {{ successMessage }}
+          </div>
+
+          <button 
+            mat-raised-button 
+            class="btn-create" 
+            (click)="createRoom()"
+            [disabled]="isCreating || !name || !capacity || !location"
+          >
+            <mat-spinner *ngIf="isCreating" diameter="20" style="margin-right: 8px;"></mat-spinner>
+            <mat-icon *ngIf="!isCreating">add</mat-icon>
+            {{ isCreating ? 'Creating...' : 'Create Room' }}
+          </button>
+        </div>
+      </mat-card>
+
+      <!-- Rooms List -->
+      <div class="rooms-section">
+        <div class="rooms-header">
+          <h2 class="section-title">
+            <mat-icon>meeting_room</mat-icon>
+            Rooms
+          </h2>
+          <div class="rooms-count" *ngIf="!isLoading">
+            <mat-icon>list</mat-icon>
+            {{ rooms.length }} rooms
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <mat-spinner diameter="40" color="primary"></mat-spinner>
+          <p>Loading rooms...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
+          <mat-icon class="empty-icon">inbox</mat-icon>
+          <h3>No Rooms Yet</h3>
+          <p>Create your first meeting room using the form.</p>
+        </div>
+
+        <!-- Room Cards -->
+        <div class="room-grid" *ngIf="!isLoading && rooms.length > 0">
+          <mat-card class="room-card" *ngFor="let room of rooms">
+            <mat-card-content class="room-card-content">
+              <div class="room-icon-wrapper">
+                <mat-icon>meeting_room</mat-icon>
+              </div>
+              <h4 class="room-name">{{ room.name }}</h4>
+              <div class="room-details">
+                <div class="detail-row">
+                  <mat-icon>people</mat-icon>
+                  <span class="detail-label">Capacity:</span>
+                  <span class="detail-value">{{ room.capacity }} people</span>
+                </div>
+                <div class="detail-row">
+                  <mat-icon>location_on</mat-icon>
+                  <span class="detail-label">Location:</span>
+                  <span class="detail-value">{{ room.location }}</span>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
         </div>
       </div>
     </div>

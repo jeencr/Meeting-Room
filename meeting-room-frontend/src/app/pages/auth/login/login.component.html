@@ -1,27 +1,309 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-      <div class="card p-4">
-        <h3 class="text-center mb-4">Login</h3>
+<style>
+  /* Login Container */
+  .login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+  }
 
-        <div class="mb-3">
-          <label> Username </label>
+  /* Login Card */
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    background: white !important;
+    background-color: white !important;
+  }
 
-          <input type="text" class="form-control" [(ngModel)]="username" />
+  .login-card.mat-mdc-card {
+    background-color: white !important;
+  }
+
+  .login-card .mat-mdc-card-content {
+    padding: 40px !important;
+  }
+
+  /* Header */
+  .login-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .logo-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .logo-icon mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: white;
+  }
+
+  .login-header h2 {
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: #718096;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* Form Group */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 6px;
+  }
+
+  /* Input Wrapper */
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #a0aec0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 12px 14px 12px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #2d3748;
+    background: white;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .custom-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  .custom-input::placeholder {
+    color: #cbd5e0;
+  }
+
+  .custom-input:hover {
+    border-color: #a0aec0;
+  }
+
+  /* Password Input with toggle */
+  .input-wrapper .custom-input.password-input {
+    padding-right: 50px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0aec0;
+    transition: color 0.2s ease;
+    z-index: 1;
+  }
+
+  .password-toggle:hover {
+    color: #667eea;
+  }
+
+  .password-toggle mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Login Button */
+  .login-btn {
+    width: 100%;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    height: 50px !important;
+    margin-top: 10px !important;
+    border: none !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .login-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-2px);
+  }
+
+  .login-btn:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Register Link */
+  .register-link {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #718096;
+  }
+
+  .register-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .register-link a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+
+  /* Spinner in button */
+  .login-btn mat-spinner {
+    margin-right: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .login-card .mat-mdc-card-content {
+      padding: 30px 20px !important;
+    }
+
+    .login-header h2 {
+      font-size: 20px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    .logo-icon mat-icon {
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
+    }
+
+    .custom-input {
+      padding: 10px 12px 10px 40px;
+      font-size: 14px;
+    }
+  }
+</style>
+
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-content>
+      <!-- Header -->
+      <div class="login-header">
+        <div class="logo-icon">
+          <mat-icon>meeting_room</mat-icon>
         </div>
-
-        <div class="mb-3">
-          <label> Password </label>
-
-          <input type="password" class="form-control" [(ngModel)]="password" />
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-danger">
-          {{ errorMessage }}
-        </div>
-
-        <button class="btn btn-primary w-100" (click)="login()">Login</button>
+        <h2>Meeting Room Booking</h2>
+        <p class="subtitle">Sign in to continue</p>
       </div>
-    </div>
-  </div>
+
+      <!-- Login Form -->
+      <form (ngSubmit)="login()">
+        <!-- Username -->
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">person</mat-icon>
+            <input 
+              type="text" 
+              class="custom-input" 
+              [(ngModel)]="username" 
+              name="username" 
+              placeholder="Enter your username" 
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">lock</mat-icon>
+            <input 
+              [type]="hidePassword ? 'password' : 'text'" 
+              class="custom-input password-input" 
+              [(ngModel)]="password" 
+              name="password" 
+              placeholder="Enter your password" 
+              required
+            />
+            <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Button -->
+        <button 
+          mat-raised-button 
+          class="login-btn" 
+          type="submit" 
+          [disabled]="isLoading || !username || !password"
+        >
+          <mat-spinner *ngIf="isLoading" diameter="22"></mat-spinner>
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading">Signing in...</span>
+        </button>
+
+        <!-- Register Link -->
+        <div class="register-link">
+          <span>Don't have an account? </span>
+          <a routerLink="/register">Create Account</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
