@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class RoomService {
-  apiUrl = 'http://127.0.0.1:8000/api';
+  apiUrl = 'https://meeting-room-15d5.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 

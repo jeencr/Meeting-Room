@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthService {
-  apiUrl = 'http://localhost:8000/api';
+  apiUrl = 'https://meeting-room-15d5.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 
