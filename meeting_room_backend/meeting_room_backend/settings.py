@@ -1,3 +1,7 @@
+
+
+import os
+import dj_database_url
 """
 Django settings for meeting_room_backend project.
 
@@ -81,15 +85,11 @@ WSGI_APPLICATION = 'meeting_room_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meeting_room_db',
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres:root@localhost:5432/meeting_room_db'
+    )
 }
 
 
