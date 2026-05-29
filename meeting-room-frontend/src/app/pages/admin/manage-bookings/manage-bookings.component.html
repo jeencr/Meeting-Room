@@ -422,13 +422,18 @@
       <div class="search-bar">
         <mat-form-field appearance="outline" class="search-field">
           <mat-label>Search bookings</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Search..."
+            #input
+          />
           <mat-icon matPrefix>search</mat-icon>
         </mat-form-field>
       </div>
 
       <!-- Custom Table -->
-      <div style="overflow-x: auto;">
+      <div style="overflow-x: auto">
         <table class="custom-table">
           <thead>
             <tr>
@@ -446,12 +451,15 @@
               <!-- User -->
               <td>
                 <div class="user-cell">
-                  <div class="user-avatar" [ngClass]="{
-                    'avatar-purple': i % 4 === 0,
-                    'avatar-blue': i % 4 === 1,
-                    'avatar-green': i % 4 === 2,
-                    'avatar-orange': i % 4 === 3
-                  }">
+                  <div
+                    class="user-avatar"
+                    [ngClass]="{
+                      'avatar-purple': i % 4 === 0,
+                      'avatar-blue': i % 4 === 1,
+                      'avatar-green': i % 4 === 2,
+                      'avatar-orange': i % 4 === 3,
+                    }"
+                  >
                     {{ booking.username?.charAt(0)?.toUpperCase() }}
                   </div>
                   <span class="user-name">{{ booking.username }}</span>
@@ -492,35 +500,46 @@
 
               <!-- Status -->
               <td>
-                <span class="status-badge" [ngClass]="{
-                  'status-pending': booking.status === 'Pending',
-                  'status-approved': booking.status === 'Approved',
-                  'status-rejected': booking.status === 'Rejected'
-                }">
-                  <mat-icon *ngIf="booking.status === 'Pending'">hourglass_empty</mat-icon>
-                  <mat-icon *ngIf="booking.status === 'Approved'">check_circle</mat-icon>
-                  <mat-icon *ngIf="booking.status === 'Rejected'">cancel</mat-icon>
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+                    'status-pending': booking.status === 'Pending',
+                    'status-approved': booking.status === 'Approved',
+                    'status-rejected': booking.status === 'Rejected',
+                  }"
+                >
+                  <mat-icon *ngIf="booking.status === 'Pending'"
+                    >hourglass_empty</mat-icon
+                  >
+                  <mat-icon *ngIf="booking.status === 'Approved'"
+                    >check_circle</mat-icon
+                  >
+                  <mat-icon *ngIf="booking.status === 'Rejected'"
+                    >cancel</mat-icon
+                  >
                   {{ booking.status }}
                 </span>
               </td>
-
-              <!-- Actions -->
+              <!-- actions -->
               <td>
                 <div class="action-btns">
-                  <button 
-                    mat-raised-button 
+                  <button
+                    *ngIf="booking.status === 'Pending'"
+                    mat-raised-button
                     class="btn-approve"
                     (click)="updateStatus(booking.booking_id, 'Approved')"
-                    [disabled]="booking.status === 'Approved' || isUpdating"
+                    [disabled]="isUpdating"
                   >
                     <mat-icon>check</mat-icon>
                     Approve
                   </button>
-                  <button 
-                    mat-stroked-button 
+
+                  <button
+                    *ngIf="booking.status === 'Pending'"
+                    mat-stroked-button
                     class="btn-reject"
                     (click)="updateStatus(booking.booking_id, 'Rejected')"
-                    [disabled]="booking.status === 'Rejected' || isUpdating"
+                    [disabled]="isUpdating"
                   >
                     <mat-icon>close</mat-icon>
                     Reject

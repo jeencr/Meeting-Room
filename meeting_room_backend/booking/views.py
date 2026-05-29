@@ -163,7 +163,7 @@ def create_booking(request):
             if end <= start:
                 return JsonResponse({'error': 'End time must be greater than start time'}, status=400)
 
-            overlapping_bookings = Booking.objects.filter(room=room,date=booking_date,start_time__lt=end,end_time__gt=start)
+            overlapping_bookings = Booking.objects.filter(room=room,date=booking_date,start_time__lt=end,end_time__gt=start,status__in=['Pending', 'Approved'])
             if overlapping_bookings.exists():
                 return JsonResponse({'error': 'Room already booked for this time slot'}, status=400)
 
@@ -265,7 +265,7 @@ def booked_slots(request):
         if not room_id or not date:
             return JsonResponse({'error': 'Room and date required'}, status=400)
 
-        bookings = Booking.objects.filter(room_id=room_id,date=date)
+        bookings = Booking.objects.filter(room_id=room_id,date=date,status_in=['Pending','Approved'])
         slot_data = []
         for booking in bookings:
             slot_data.append({
